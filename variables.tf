@@ -82,6 +82,16 @@ variable "load_balancer" {
   })
 }
 
+variable "capacity_provider_strategy" {
+  description = "(Optional) Capacity provider strategies to use for the service. Can be one or more. These can be updated without destroying and recreating the service only if force_new_deployment = true and not changing from 0 capacity_provider_strategy blocks to greater than 0, or vice versa. "
+  default     = []
+  type = list(object({
+    base   = number
+    name   = string
+    weight = number
+  }))
+}
+
 variable "tags" {
   description = "A map of tags to assign to the target group. If configured with a provider default_tags configuration block present, tags with matching keys will overwrite those defined at the provider-level."
   type        = map(any)
