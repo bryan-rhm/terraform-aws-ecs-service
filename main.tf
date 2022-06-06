@@ -4,7 +4,7 @@ resource "aws_ecs_service" "this" {
   task_definition                    = var.task_definition_arn
   desired_count                      = var.desired_count
   propagate_tags                     = var.propagate_tags
-  launch_type                        = var.launch_type
+  launch_type                        = length(var.capacity_provider_strategy)>0 ? null : var.launch_type
   health_check_grace_period_seconds  = var.load_balancer == null ? null : var.health_check_grace_period
   deployment_maximum_percent         = var.deployment_maximum_percent
   deployment_minimum_healthy_percent = var.deployment_minimum_percent
@@ -37,6 +37,16 @@ resource "aws_ecs_service" "this" {
       target_group_arn = var.load_balancer.target_group_arn
       container_name   = var.load_balancer.container_name
       container_port   = var.load_balancer.container_port
+    }
+  }
+  
+  dynamic "capacity_provider_strategy" {
+    for_each = { for capacity in var.capacity_provider_strategy: capacity.name => capacity }
+    
+    content {
+      base              = capacity_provider_strategy.value.base
+      weight            = capacity_provider_strategy.value.weight
+      capacity_provider = capacity_provider_strategy.key
     }
   }
 
