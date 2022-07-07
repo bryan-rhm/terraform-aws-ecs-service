@@ -27,6 +27,12 @@ variable "propagate_tags" {
   type        = string
 }
 
+variable "enable_execute_command" {
+  description = "(Optional) Specifies whether to enable Amazon ECS Exec for the tasks within the service."
+  default     = false
+  type        = bool
+}
+
 variable "launch_type" {
   description = "Launch type on which to run your service. The valid values are EC2, FARGATE, and EXTERNAL."
   default     = "FARGATE"
