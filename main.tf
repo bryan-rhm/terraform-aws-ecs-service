@@ -4,6 +4,7 @@ resource "aws_ecs_service" "this" {
   task_definition                    = var.task_definition_arn
   desired_count                      = var.desired_count
   propagate_tags                     = var.propagate_tags
+  enable_execute_command             = var.enable_execute_command
   launch_type                        = length(var.capacity_provider_strategy)>0 ? null : var.launch_type
   health_check_grace_period_seconds  = var.load_balancer == null ? null : var.health_check_grace_period
   deployment_maximum_percent         = var.deployment_maximum_percent
