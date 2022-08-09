@@ -29,7 +29,7 @@ variable "propagate_tags" {
 
 variable "enable_execute_command" {
   description = "(Optional) Specifies whether to enable Amazon ECS Exec for the tasks within the service."
-  default     = false
+  default     = true
   type        = bool
 }
 
