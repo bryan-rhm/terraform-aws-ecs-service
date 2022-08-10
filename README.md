@@ -1,4 +1,42 @@
-# Terraform ECS Service Module
+# Terraform AWS ECS Service Module
+
+This terraform module provisions an ECS service.
+
+## Usage
+
+Example on how to provision an AWS ECS Service with [FARGATE SPOT](https://aws.amazon.com/es/blogs/aws/aws-fargate-spot-now-generally-available/) containers.
+
+```hcl
+module "ecs_service" {
+  source                     = "bryan-rhm/ecs-service/aws"
+  version                    = "..." # select your prefered version
+  name                       = "service-name"
+  cluster_arn                = module.ecs_cluster.output.arn
+  task_definition_arn        = module.ecs_task_definition.output.arn
+  desired_count              = 2
+  propagate_tags             = "TASK_DEFINITION"
+  launch_type                = "FARGATE"
+  deployment_maximum_percent = 200
+  deployment_minimum_percent = 100
+
+  network_config = {
+    subnets         = module.vpc.output.private_subnet_ids
+    security_groups = ["sg-id-1234"]
+  }
+
+  capacity_provider_strategy = [{
+    base   = 2
+    name   = "FARGATE_SPOT"
+    weight = 1
+  }]
+
+  load_balancer = {
+    target_group_arn = module.alb_target_group.output.arn
+    container_name   = "container-name"
+    container_port   = 8080
+  }
+}
+```
 
 ## Requirements
 
